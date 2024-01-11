@@ -88,12 +88,6 @@
 			<version>4.1.0</version>
 			<scope>test</scope>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.hibernate.validator</groupId>-->
-<!--			<artifactId>hibernate-validator</artifactId>-->
-<!--			<version>6.2.0.Final</version>-->
-<!--		</dependency>-->
-
 	</dependencies>
 
 	<build>
