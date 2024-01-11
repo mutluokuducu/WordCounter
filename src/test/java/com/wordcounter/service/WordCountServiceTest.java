@@ -21,9 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 class WordCountServiceTest {
 
-  @Mock private JavaSparkContext javaSparkContext;
+  @Mock
+  private JavaSparkContext javaSparkContext;
 
-  @Mock private TranslationService translationService;
+  @Mock
+  private TranslationService translationService;
 
   private WordCountServiceImpl wordCountService;
 
@@ -43,7 +45,7 @@ class WordCountServiceTest {
   void testCountWords() {
     String testInput = "hello world, hello!, the quick brown fox. The brown dog.";
     when(translationService.translateToEnglish(testInput)).thenReturn(testInput);
-    Map<String, Long> wordCounts = wordCountService.countWords(testInput);
+    Map<String, Long> wordCounts = wordCountService.countWords(testInput, false);
 
     assertEquals(6, wordCounts.size());
     assertEquals(Long.valueOf(2), wordCounts.get("hello"));
@@ -58,24 +60,22 @@ class WordCountServiceTest {
 
     assertNull(wordCounts.get("is"));
     assertNull(wordCounts.get("are"));
-    verify(translationService).translateToEnglish(testInput);
   }
 
   @Test
   void testCountWordsWithEmptyText() {
     String testText = "";
     when(translationService.translateToEnglish(testText)).thenReturn(testText);
-    Map<String, Long> wordCounts = wordCountService.countWords(testText);
+    Map<String, Long> wordCounts = wordCountService.countWords(testText, false);
 
     assertTrue(wordCounts.isEmpty(), "Word count should be empty for empty text");
-    verify(translationService).translateToEnglish(testText);
   }
 
   @Test
   void testCountWordsWithMixedCase() {
     String testText = "Apple apple APpLE";
     when(translationService.translateToEnglish(testText)).thenReturn(testText);
-    Map<String, Long> wordCounts = wordCountService.countWords(testText);
+    Map<String, Long> wordCounts = wordCountService.countWords(testText, true);
 
     assertEquals(
         3, wordCounts.getOrDefault("apple", 0L), "Mixed case words should be counted correctly");
@@ -86,7 +86,7 @@ class WordCountServiceTest {
   void testCountWordsWithNumbers() {
     String testText = "Test 123 test 456";
     when(translationService.translateToEnglish(testText)).thenReturn(testText);
-    Map<String, Long> wordCounts = wordCountService.countWords(testText);
+    Map<String, Long> wordCounts = wordCountService.countWords(testText, true);
 
     assertEquals(
         2, wordCounts.getOrDefault("test", 0L), "Words with numbers should be handled correctly");
@@ -99,7 +99,7 @@ class WordCountServiceTest {
     MultipartFile mockFile = new MockMultipartFile("file", "hello world, hello".getBytes());
 
     when(translationService.translateToEnglish(anyString())).thenReturn("hello world hello");
-    Map<String, Long> wordCounts = wordCountService.countWordsInFile(mockFile);
+    Map<String, Long> wordCounts = wordCountService.countWordsInFile(mockFile, true);
     assertEquals(2, wordCounts.getOrDefault("hello", 0L));
     assertEquals(1, wordCounts.getOrDefault("world", 0L));
     verify(translationService).translateToEnglish(anyString());

@@ -42,25 +42,29 @@ public class WordCountController {
   }
 
   @PostMapping(value = POST_WORD_COUNT_URL)
-  public ResponseEntity<Map<String, Long>> countWords(@RequestBody String text) {
+  public ResponseEntity<Map<String, Long>> countWords(
+      @RequestBody String text,
+      @RequestParam(value = "isNeedTranslate", defaultValue = "false") boolean isNeedTranslate) {
     LOGGER.info("Text word count service started");
-    Map<String, Long> wordCounts = wordCountService.countWords(text);
+    Map<String, Long> wordCounts = wordCountService.countWords(text, isNeedTranslate);
     return ResponseEntity.ok(wordCounts);
   }
 
   @PostMapping(value = UPLOAD_FILE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @Operation(summary = "Upload a single File")
-  public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<?> uploadFile(
+      @RequestParam("file") MultipartFile file,
+      @RequestParam(value = "isNeedTranslate", defaultValue = "false") boolean isNeedTranslate) {
     if (file.isEmpty()) {
-      return ResponseEntity.badRequest().build();
+      return ResponseEntity.badRequest().body("file is empty");
     }
     try {
       LOGGER.info("Text word count service file uploaded {}", file.getName());
-      Map<String, Long> wordCounts = wordCountService.countWordsInFile(file);
+      Map<String, Long> wordCounts = wordCountService.countWordsInFile(file, isNeedTranslate);
       return ResponseEntity.ok(wordCounts);
     } catch (IOException e) {
-      LOGGER.error("File upload get error {}:", file.getName());
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+      LOGGER.error("File upload get error {}", file.getName());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("get error");
     }
   }
 

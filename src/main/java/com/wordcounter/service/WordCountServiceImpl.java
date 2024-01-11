@@ -37,32 +37,39 @@ public class WordCountServiceImpl implements WordCountService {
   }
 
   @Override
-  public Map<String, Long> countWords(String text) {
+  public Map<String, Long> countWords(String text, boolean isNeedTranslate) {
     LOGGER.info("Text countWords method started");
+    if (isNeedTranslate) {
+      text = translationService.translateToEnglish(text);
+    }
     Pattern punctuation = Pattern.compile(PUNCTUATION_PATTERN);
-    String checkLanguage = translationService.translateToEnglish(text);
     JavaRDD<String> wordsRDD =
         javaSparkContext.parallelize(
             Arrays.asList(
-                punctuation.matcher(checkLanguage.toLowerCase()).replaceAll("").split("\\s+")));
+                punctuation.matcher(text.toLowerCase()).replaceAll("").split("\\s+")));
 
     return new TreeMap<>(getStringLongMap(wordsRDD));
   }
 
   @Override
-  public Map<String, Long> countWordsInFile(MultipartFile file) throws IOException {
+  public Map<String, Long> countWordsInFile(MultipartFile file, boolean isNeedTranslate)
+      throws IOException {
     LOGGER.info("Text countWordsInFile method started");
     String fileContent =
         new BufferedReader(new InputStreamReader(file.getInputStream()))
             .lines()
             .collect(Collectors.joining("\n"));
     LOGGER.info("Text countWordsInFile file converted to string");
-    String checkLanguage = translationService.translateToEnglish(fileContent);
+
+    if (isNeedTranslate) {
+      fileContent = translationService.translateToEnglish(fileContent);
+    }
+
     Pattern punctuation = Pattern.compile(PUNCTUATION_PATTERN);
     JavaRDD<String> wordsRDD =
         javaSparkContext.parallelize(
             Arrays.asList(
-                punctuation.matcher(checkLanguage.toLowerCase()).replaceAll("").split("\\s+")));
+                punctuation.matcher(fileContent.toLowerCase()).replaceAll("").split("\\s+")));
     LOGGER.info("Text countWordsInFile file converted to RDD");
     return new TreeMap<>(getStringLongMap(wordsRDD));
   }

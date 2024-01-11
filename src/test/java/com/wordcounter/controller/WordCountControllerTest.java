@@ -1,7 +1,9 @@
 package com.wordcounter.controller;
 
 import static com.wordcounter.constant.Constants.POST_WORD_COUNT_URL;
+import static com.wordcounter.constant.Constants.UPLOAD_FILE;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.verify;
@@ -30,9 +32,11 @@ class WordCountControllerTest {
 
   private MockMvc mockMvc;
 
-  @Mock private WordCountService wordCountService;
+  @Mock
+  private WordCountService wordCountService;
 
-  @InjectMocks private WordCountController wordCountController;
+  @InjectMocks
+  private WordCountController wordCountController;
 
   @BeforeEach
   public void setup() {
@@ -46,7 +50,7 @@ class WordCountControllerTest {
     mockResponse.put("hello", 1L);
     mockResponse.put("world", 1L);
 
-    given(wordCountService.countWords(anyString())).willReturn(mockResponse);
+    given(wordCountService.countWords(anyString(), anyBoolean())).willReturn(mockResponse);
 
     mockMvc
         .perform(
@@ -61,15 +65,17 @@ class WordCountControllerTest {
   @Test
   void shouldUploadFile() throws Exception {
     MockMultipartFile file =
-        new MockMultipartFile("file", "filename.txt", "text/plain", "Hello World".getBytes());
+        new MockMultipartFile("file", "filename.txt", MediaType.MULTIPART_FORM_DATA_VALUE,
+            "Hello World".getBytes());
 
-    when(wordCountService.countWordsInFile(any())).thenReturn(Map.of("hello", 1L, "world", 1L));
-
+    when(wordCountService.countWordsInFile(any(), anyBoolean())).thenReturn(
+        Map.of("hello", 1L, "world", 1L));
     mockMvc
-        .perform(multipart("/upload").file(file).contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+        .perform(
+            multipart("/v1/upload").file(file).contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
         .andExpect(status().isOk());
 
-    verify(wordCountService).countWordsInFile(any());
+    verify(wordCountService).countWordsInFile(any(), anyBoolean());
   }
 
   @Test
@@ -78,7 +84,7 @@ class WordCountControllerTest {
         new MockMultipartFile("file", "empty.txt", "text/plain", new byte[0]);
     mockMvc
         .perform(
-            multipart("/upload").file(emptyFile).contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+            multipart(UPLOAD_FILE).file(emptyFile).contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
         .andExpect(status().isBadRequest());
   }
 }

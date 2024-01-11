@@ -10,14 +10,14 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @Getter
 public enum ErrorType {
-  INTERNAL_ERROR( "An internal server error occurred", INTERNAL_SERVER_ERROR),
+  INTERNAL_ERROR("An internal server error occurred", INTERNAL_SERVER_ERROR),
   INVALID("Invalid request", BAD_REQUEST);
 
 
   private String description;
   private HttpStatus httpStatus;
 
-  ErrorType( String description, HttpStatus httpStatus) {
+  ErrorType(String description, HttpStatus httpStatus) {
 
     this.description = description;
     this.httpStatus = httpStatus;

@@ -13,8 +13,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 class TranslationServiceImplTest {
-  @Mock private Translate translate;
-  @Mock private Translation translation;
+
+  @Mock
+  private Translate translate;
+  @Mock
+  private Translation translation;
 
   private TranslationServiceImpl translationService;
 
@@ -22,9 +25,9 @@ class TranslationServiceImplTest {
   public void setUp() throws Exception {
     MockitoAnnotations.openMocks(this);
     when(translate.translate(
-            anyString(),
-            any(Translate.TranslateOption.class),
-            any(Translate.TranslateOption.class)))
+        anyString(),
+        any(Translate.TranslateOption.class),
+        any(Translate.TranslateOption.class)))
         .thenReturn(translation);
     when(translation.getTranslatedText()).thenReturn("translated text");
 

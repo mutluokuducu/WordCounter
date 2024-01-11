@@ -3,7 +3,6 @@ package com.wordcounter.service;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
-import com.wordcounter.controller.WordCountController;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +36,8 @@ public class TranslationServiceImpl implements TranslationService {
 }
 
 /**
- Translate translate =
- TranslateOptions.newBuilder().setApiKey(googleApiKey).build().getService();
-
- Translation translation =
- translate.translate(
- text,
- Translate.TranslateOption.targetLanguage("en"),
- Translate.TranslateOption.model("base"));
- return translation.getTranslatedText();
- }
+ * Translate translate = TranslateOptions.newBuilder().setApiKey(googleApiKey).build().getService();
+ * <p>
+ * Translation translation = translate.translate( text, Translate.TranslateOption.targetLanguage("en"),
+ * Translate.TranslateOption.model("base")); return translation.getTranslatedText(); }
  */
