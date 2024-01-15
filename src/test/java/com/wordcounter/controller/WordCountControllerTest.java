@@ -81,7 +81,7 @@ class WordCountControllerTest {
   @Test
   void shouldReturnBadRequestForEmptyFile() throws Exception {
     MockMultipartFile emptyFile =
-        new MockMultipartFile("file", "empty.txt", "text/plain", new byte[0]);
+        new MockMultipartFile("files", "", "text/plain", new byte[0]);
     mockMvc
         .perform(
             multipart(UPLOAD_FILE).file(emptyFile).contentType(MediaType.MULTIPART_FORM_DATA_VALUE))

@@ -1,6 +1,6 @@
 package com.wordcounter.service;
 
-public interface TranslationService {
+public interface Translation {
 
   String translateToEnglish(String text);
 }

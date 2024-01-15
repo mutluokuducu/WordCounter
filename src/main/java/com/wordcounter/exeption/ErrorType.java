@@ -1,6 +1,5 @@
 package com.wordcounter.exeption;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import lombok.Getter;
@@ -11,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorType {
   INTERNAL_ERROR("An internal server error occurred", INTERNAL_SERVER_ERROR),
-  INVALID("Invalid request", BAD_REQUEST);
+  BAD_REQUEST("Invalid request", HttpStatus.BAD_REQUEST);
 
 
   private String description;

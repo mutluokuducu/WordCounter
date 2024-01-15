@@ -43,7 +43,6 @@ The application leverages Google Cloud Translation API for translation capabilit
 ## API Endpoints
 - `POST /v1/wordcount`: Add text and count words.
 - `POST /v1/upload`: Upload text file.
-- `GET /v1/translate`: Retrieve translated text in English.
 
 ## Requirements
 

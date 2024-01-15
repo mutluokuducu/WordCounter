@@ -12,14 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-class TranslationServiceImplTest {
+class TranslationImplTest {
 
   @Mock
   private Translate translate;
   @Mock
   private Translation translation;
 
-  private TranslationServiceImpl translationService;
+  private TranslationImpl translationService;
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -32,7 +32,7 @@ class TranslationServiceImplTest {
     when(translation.getTranslatedText()).thenReturn("translated text");
 
     translationService =
-        new TranslationServiceImpl() {
+        new TranslationImpl() {
           @Override
           protected Translate getTranslateService() {
             return translate;

@@ -25,7 +25,7 @@ class WordCountServiceTest {
   private JavaSparkContext javaSparkContext;
 
   @Mock
-  private TranslationService translationService;
+  private Translation translation;
 
   private WordCountServiceImpl wordCountService;
 
@@ -33,7 +33,7 @@ class WordCountServiceTest {
   public void setUp() {
     MockitoAnnotations.openMocks(this);
     SparkConf conf = new SparkConf().setAppName("test").setMaster("local");
-    wordCountService = new WordCountServiceImpl(conf, translationService);
+    wordCountService = new WordCountServiceImpl(conf, translation);
   }
 
   @AfterEach
@@ -44,7 +44,7 @@ class WordCountServiceTest {
   @Test
   void testCountWords() {
     String testInput = "hello world, hello!, the quick brown fox. The brown dog.";
-    when(translationService.translateToEnglish(testInput)).thenReturn(testInput);
+    when(translation.translateToEnglish(testInput)).thenReturn(testInput);
     Map<String, Long> wordCounts = wordCountService.countWords(testInput, false);
 
     assertEquals(6, wordCounts.size());
@@ -65,7 +65,7 @@ class WordCountServiceTest {
   @Test
   void testCountWordsWithEmptyText() {
     String testText = "";
-    when(translationService.translateToEnglish(testText)).thenReturn(testText);
+    when(translation.translateToEnglish(testText)).thenReturn(testText);
     Map<String, Long> wordCounts = wordCountService.countWords(testText, false);
 
     assertTrue(wordCounts.isEmpty(), "Word count should be empty for empty text");
@@ -74,34 +74,34 @@ class WordCountServiceTest {
   @Test
   void testCountWordsWithMixedCase() {
     String testText = "Apple apple APpLE";
-    when(translationService.translateToEnglish(testText)).thenReturn(testText);
+    when(translation.translateToEnglish(testText)).thenReturn(testText);
     Map<String, Long> wordCounts = wordCountService.countWords(testText, true);
 
     assertEquals(
         3, wordCounts.getOrDefault("apple", 0L), "Mixed case words should be counted correctly");
-    verify(translationService).translateToEnglish(testText);
+    verify(translation).translateToEnglish(testText);
   }
 
   @Test
   void testCountWordsWithNumbers() {
     String testText = "Test 123 test 456";
-    when(translationService.translateToEnglish(testText)).thenReturn(testText);
+    when(translation.translateToEnglish(testText)).thenReturn(testText);
     Map<String, Long> wordCounts = wordCountService.countWords(testText, true);
 
     assertEquals(
         2, wordCounts.getOrDefault("test", 0L), "Words with numbers should be handled correctly");
     assertNull(wordCounts.get("123"), "Numbers should not be counted as words");
-    verify(translationService).translateToEnglish(testText);
+    verify(translation).translateToEnglish(testText);
   }
 
   @Test
   void testCountWordsInFile() throws IOException {
     MultipartFile mockFile = new MockMultipartFile("file", "hello world, hello".getBytes());
 
-    when(translationService.translateToEnglish(anyString())).thenReturn("hello world hello");
+    when(translation.translateToEnglish(anyString())).thenReturn("hello world hello");
     Map<String, Long> wordCounts = wordCountService.countWordsInFile(mockFile, true);
     assertEquals(2, wordCounts.getOrDefault("hello", 0L));
     assertEquals(1, wordCounts.getOrDefault("world", 0L));
-    verify(translationService).translateToEnglish(anyString());
+    verify(translation).translateToEnglish(anyString());
   }
 }
